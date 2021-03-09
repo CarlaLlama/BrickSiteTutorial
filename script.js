@@ -24,6 +24,7 @@ const BRICKS = [
 
  var stripe = Stripe("pk_test_51IKlwdAhJUZ4ZUqHO9ukmofCvmpp4ttlqsSpupeTYwiDJTYOVnh2n0xNYhYzP9Tkw3ddNXGe5LZliOGu3f8sxX6N001zb0122M");
 
+
 for (var i = 0; i < BRICKS.length; i++) {
   let newBrick = document.createElement('div');
   newBrick.className = "tile is-parent";
@@ -44,11 +45,30 @@ for (var i = 0; i < BRICKS.length; i++) {
   newBrickCost.innerHTML = "This brick costs: $" + BRICKS[i].cost;
 
   let newBrickButton = document.createElement('a');
+  newBrickButton.id = i;
   newBrickButton.className = "button is-dark";
   newBrickButton.innerHTML = "Buy this brick"
-  newBrickButton.addEventListener("click", function () {
-    console.log("CLICKED BUTTO: ", BRICKS[i].name);
-    fetch("/create-checkout-session", {
+  newBrickButton.onclick = button_click;
+
+  newBrickArticle.appendChild(newBrickTitle);
+  newBrickArticle.appendChild(newBrickDesc);
+  newBrickArticle.appendChild(newBrickCost);
+  newBrickArticle.appendChild(newBrickButton);
+
+  newBrick.appendChild(newBrickArticle);
+  document.getElementById("bricks").appendChild(newBrick);    
+}
+
+function button_click(event) {
+    console.log("EVENT", event)
+    event = event || window.event; // IE
+    var target = event.target || event.srcElement; // IE
+
+    console.log("TARGET", target, target.id);
+    var id = target.id;
+    let i = parseInt(id);
+    const API_URL = 'https://MySitesCheckoutWithStripe.thisiscarla.repl.co/create-checkout-session';
+    fetch(API_URL, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -62,9 +82,12 @@ for (var i = 0; i < BRICKS.length; i++) {
       })
     })
       .then(function (response) {
-        return response.json();
+        let data = response.json()
+        console.log("HERE", data);
+        return data;
       })
       .then(function (session) {
+        console.log("REDIRECT")
         return stripe.redirectToCheckout({ sessionId: session.id });
       })
       .then(function (result) {
@@ -78,13 +101,4 @@ for (var i = 0; i < BRICKS.length; i++) {
       .catch(function (error) {
         console.error("Error:", error);
       });
-  });
-
-  newBrickArticle.appendChild(newBrickTitle);
-  newBrickArticle.appendChild(newBrickDesc);
-  newBrickArticle.appendChild(newBrickCost);
-  newBrickArticle.appendChild(newBrickButton);
-
-  newBrick.appendChild(newBrickArticle);
-  document.getElementById("bricks").appendChild(newBrick);    
 }

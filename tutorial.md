@@ -14,12 +14,12 @@ For the sake of continuity, both parts are covered in the tutorial that follows.
 ## Part 1: Start your Repl.it Stripe Server
 
 Start a new Node.js repl:
-![Picking a repl](https://repl.it/@ThisisCarla/BrickSite#images/1.png)
+![Picking a repl](images/1.png)
 
 Next, pick the Express server template, it’ll provide the framework to integrate with Stripe from a server. 
 
 Giving it a run generates the following:
-![Running the repl](https://repl.it/@ThisisCarla/BrickSite#images/2.png)
+![Running the repl](images/2.png)
 
 Terrific! We’re already “hosting” our server with Repl.it.
 
@@ -76,7 +76,7 @@ Contents of .env:
 STRIPE_KEY=sk_test_51IKlwdAhJUZ4ZUqHFBRpOTbbNVakSMbHbouhVH89YPszHcOftinFd6Vi5oOOaY1HZ1PDNmOfiKEEdR03vOqeaHWU00TnpDSj8N
 ```
 It should look something like:
-![Our .env](https://repl.it/@ThisisCarla/BrickSite#images/5.png)
+![Our .env](images/5.png)
 
 
 Now we need an endpoint to create a Checkout Session with Stripe - this means that it’ll redirect us to the Stripe payment page with all the appropriate information about the purchase.
@@ -119,7 +119,7 @@ You can find the complete code here: https://repl.it/@ThisisCarla/MySite#index.h
 Our first step is to add the Bulma styling library. It’s a great way to style BrickSite with little effort. We’ll include the CDN by replacing the default `rel=”stylesheet”` with the Bulma CDN.
 
 Nifty-tip! Searching “bulma” in the packages tab in our Repl.it IDE means we can insert it automatically. See here:
-![Auto adding Bulma](https://repl.it/@ThisisCarla/BrickSite#images/6.png)
+![Auto adding Bulma](images/6.png)
 
 This inserts the following into our head tag of `index.html`:
 ```
@@ -180,7 +180,7 @@ Now to add some static content and using Bulma’s out of the box classes. Paste
  
 ```
 Giving it a run generates the following:
-![First draft](https://repl.it/@ThisisCarla/BrickSite#images/7.png)
+![First draft](images/7.png)
 
 
 Now at this point we want to add some good ol’ vanilla JS variables to control the content on the page, including variables for the prices.
@@ -246,7 +246,7 @@ Here for every brick in the BRICKS array, we've created a div element, added it'
  
 Referring back to the server code, you will notice it requires both a success.html and a cancel.html. Let’s make these.
 Here’s the `success.html`:
-![Success page](https://repl.it/@ThisisCarla/BrickSite#images/9.png)
+![Success page](images/9.png)
 
 
 Code below:
@@ -276,7 +276,7 @@ Code below:
 ```
  
 And here’s the `cancel.html`:
-![Failure page](https://repl.it/@ThisisCarla/BrickSite#images/10.png)
+![Failure page](images/10.png)
 
 Code below:
 ```
@@ -318,7 +318,7 @@ Alrighty, this brings us to Part 3 - connecting the parts!
 ## Part 3: Connecting the Parts
 Going back to our Server, we’ll notice the `YOUR_DOMAIN` constant. Set that as your Repl.it “frontend” url.
 Eg my frontend url is: `https://MySitesCheckoutWithStripe.thisiscarla.repl.co` as you can see below:
-![URL](https://repl.it/@ThisisCarla/BrickSite#images/11.png)
+![URL](images/11.png)
 
 Now within the `create-checkout-session` post request, we need to do a couple of things, the first is to define the payment methods available:
 ```
