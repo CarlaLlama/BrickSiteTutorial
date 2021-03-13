@@ -48,7 +48,7 @@ for (var i = 0; i < BRICKS.length; i++) {
   newBrickButton.id = i;
   newBrickButton.className = "button is-dark";
   newBrickButton.innerHTML = "Buy this brick"
-  newBrickButton.onclick = button_click;
+  newBrickButton.onclick = buttonClick;
 
   newBrickArticle.appendChild(newBrickTitle);
   newBrickArticle.appendChild(newBrickDesc);
@@ -59,35 +59,32 @@ for (var i = 0; i < BRICKS.length; i++) {
   document.getElementById("bricks").appendChild(newBrick);    
 }
 
-function button_click(event) {
-    console.log("EVENT", event)
-    event = event || window.event; // IE
-    var target = event.target || event.srcElement; // IE
+async function buttonClick(event) {
+    event = event || window.event;
+    var target = event.target || event.srcElement;
 
-    console.log("TARGET", target, target.id);
     var id = target.id;
     let i = parseInt(id);
-    const API_URL = 'https://MySitesCheckoutWithStripe.thisiscarla.repl.co/create-checkout-session';
-    fetch(API_URL, {
+
+    const API_URL = "https://MySitesCheckoutWithStripe.thisiscarla.repl.co";
+      
+    return fetch(API_URL + "/create-checkout-session", {
       method: "POST",
+      mode: 'cors',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         name: BRICKS[i].name,
         images: BRICKS[i].images,
-        description: BRICKS[i].desc,
-        price: BRICKS[i].cost
+        desc: BRICKS[i].desc,
+        price: BRICKS[i].cost * 100
       })
     })
       .then(function (response) {
-        let data = response.json()
-        console.log("HERE", data);
-        return data;
+        return response.json();
       })
       .then(function (session) {
-        console.log("REDIRECT")
         return stripe.redirectToCheckout({ sessionId: session.id });
       })
       .then(function (result) {
