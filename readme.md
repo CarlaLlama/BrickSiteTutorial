@@ -562,6 +562,11 @@ First, we need to add Stripe as a CDN dependency to our site, to do this, paste 
 ```
 Between the `<head> ... </head>` tags of your `index.js`.
 
+Now going back to `script.js` we want to define a new instance of Stripe with your publishable API key (you will find this in the Load Stripe.js section of the [Integration Builder walkthrough](https://stripe.com/docs/checkout/integration-builder)):
+```
+ var stripe = Stripe(YOUR_API_KEY);
+```
+
 Now we want to create `onclick` event listeners to our button definitions so that we can initiate the purchase when the button is clicked.
 
 Underneath the button definitions in `script.js`, add the following:
