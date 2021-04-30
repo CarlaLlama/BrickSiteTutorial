@@ -1,37 +1,40 @@
-Build your online store's checkout process with Stripe on Repl.it
----------------------
+# Build Your Online Store's Checkout Process with Stripe on Replit
 
+Are you looking for an integrated solution for your site’s checkout process, without having to resort to plugins? This tutorial provides a step-by-step approach to integrating Stripe with Replit!
 
-Looking for an integrated solution for your site’s checkout process, without having to resort to plugins? Here’s a step by step approach to integrating Stripe with Repl.it!
+We'll need a frontend and a backend, both hosted on Replit. You can view the completed parts here:
+Server side: https://replit.com/@ThisisCarla/MySitesCheckoutWithStripe#index.js
+Frontend: https://replit.com/@ThisisCarla/BrickSite#index.html
 
-This tutorial requires a frontend and a backend, both hosted on Repl.it. Please check out the completed parts here:
-Server side: https://repl.it/@ThisisCarla/MySitesCheckoutWithStripe#index.js
-Frontend: https://repl.it/@ThisisCarla/MySite#index.html 
+We'll cover both of these parts below.
 
-For the sake of continuity, both parts are covered in the tutorial that follows.
+## Part 1: Start Your Replit Stripe Server
 
+Let's get started!
 
-## Part 1: Start your Repl.it Stripe Server
+1. Log into your [Replit](https://replit.com) account, or [create one now](https://replit.com/signup) if you haven't already.
+2. Click on the "+" button in the top right, and create a new repl. 
+3. Select Node.js as your language, and name the repl whatever you like. 
 
-Start a new Node.js repl:
 ![Picking a repl](images/1.png)
 
-Next, pick the Express server template, it’ll provide the framework to integrate with Stripe from a server. 
+Next, pick the Express server template. It’ll provide the framework to integrate with Stripe from a server. 
 
 Giving it a run generates the following:
+
 ![Running the repl](images/2.png)
 
-Terrific! We’re already “hosting” our server with Repl.it.
+Terrific! We’re already “hosting” our server with Replit.
 
-Next, we need to install the Stripe SDK. We can do this by running:
+Next, we need to install the Stripe SDK. We can do this by running the following in your repl shell:
  
-`npm install --save stripe ` in your Repl shell.
+`npm install --save stripe ` 
 
-Next, we want to start our Stripe account. Head over to https://stripe.com/ and create an account.
+Now we need a Stripe account, so let's [create one](https://stripe.com/).
 
-Once created, head on over to the integration walkthrough here: https://stripe.com/docs/checkout/integration-builder 
+Then head on over to the integration walkthrough here: https://stripe.com/docs/checkout/integration-builder 
 
-Now copy-pasta the walkthrough code into `index.js`:
+Now copy-paste the walkthrough code into `index.js`:
 ```
 const stripe = require('stripe')('sk_test_51IKlwdAhJUZ4ZUqHFBRpOTbbNVakSMbHbouhVH89YPszHcOftinFd6Vi5oOOaY1HZ1PDNmOfiKEEdR03vOqeaHWU00TnpDSj8N');
 const express = require('express');
@@ -63,14 +66,15 @@ app.post('/create-checkout-session', async (req, res) => {
 app.listen(4242, () => console.log('Running on port 4242'));
 ```
 
-### A brief explanation:
-This is the shell of the endpoint we'll be sending a POST request to from the frontend:
+Let's break down what we have just done. 
+
+This is the shell of the endpoint we'll be sending a POST request to, from the frontend:
 ```
 app.post('/create-checkout-session', async (req, res) => {
 	// Stuff goes here
 });
 ```
-Inside this request we will create the Checkout Session with Stripe, and return the Session id, which the frontend will use to redirect to Stripe's checkout page:
+Inside this request, we'll create the Checkout Session with Stripe, and return the Session id, which the frontend will use to redirect to Stripe's checkout page:
 
 ```
 const session = await stripe.checkout.sessions.create({
@@ -82,27 +86,26 @@ const session = await stripe.checkout.sessions.create({
 
 We'll go over the contents of this request in Part 3.
 
-Another thing we notice is that the integration builder has hardcoded our API key. This isn’t great.
+You may have noticed that the integration builder has hardcoded our API key. This isn’t great.
 
-Luckily Repl.it supports environment variables using a .env file. Check out the tutorial here https://docs.repl.it/tutorials/08-storing-secrets-and-history . 
+Luckily, Replit supports environment variables using a .env file. [Check out the .env tutorial here](https://docs.repl.it/tutorials/08-storing-secrets-and-history). 
 
+To implement this, add a `.env` file to the root of your project and set your stripe key there. This will block our API key.
+Referring to an env variable in node is done by referencing `process.env.VARIABLENAME`.
 
-To implement this, add a `.env` file to the root of your project and set your stripe key there. (will block our API key).
-Referring to an env variable in node is done by referencing `process.env.VARIABLENAME`
-
-Contents of .env:
+The contents of your .env will look like this:
 ```
 STRIPE_KEY=sk_test_51IKlwdAhJUZ4ZUqHFBRpOTbbNVakSMbHbouhVH89YPszHcOftinFd6Vi5oOOaY1HZ1PDNmOfiKEEdR03vOqeaHWU00TnpDSj8N
 ```
-It should look something like:
+
 ![Our .env](images/5.png)
 
 
-Before we continue there are a couple of extra config elements we'll need to enable to make sure our frontend and server-side can communicate. These are:
+Before we continue, there are a couple of extra config elements we must enable to make sure our frontend and server-side can communicate. These are:
 
 1. Adding body parsing
 
-Thiswill allow us to pass request body from the frontend to the server-side. Just add the following lines after `const app = express();`
+This will allow us to pass request body from the frontend to the server-side. Just add the following lines after `const app = express();`:
 
 ```
 app.use(express.urlencoded({ extended: true }));
@@ -123,13 +126,13 @@ Now import cors at the top of `index.js`:
 const cors = require('cors');
 ```
 
-Now add the following line after the two lines we added in step 1.
+Then add the following line after the two lines we added in step 1:
 
 ```
 app.use(cors());
 ```
 
-The full code now looks like:
+The full code now looks like this:
 ```
 const stripe = require('stripe')('sk_test_51IKlwdAhJUZ4ZUqHFBRpOTbbNVakSMbHbouhVH89YPszHcOftinFd6Vi5oOOaY1HZ1PDNmOfiKEEdR03vOqeaHWU00TnpDSj8N');
 const express = require('express');
@@ -167,24 +170,23 @@ app.post('/create-checkout-session', async (req, res) => {
 app.listen(4242, () => console.log('Running on port 4242'));
 ```
 
-You’ll notice the Stripe code requires a `YOUR_DOMAIN` variable, that’s currently set to https://localhost:4242. In order to link this up with our site, we need to actually create one. Enter Part 2 - Buying the Bricks with a Repl frontend!
+You’ll notice the Stripe code requires a `YOUR_DOMAIN` variable, that’s currently set to https://localhost:4242. In order to link this with our site, we need to actually create one. Enter Part 2 – Buying the bricks with a repl frontend!
 
 
-## Part 2: Buying the Bricks with a Repl frontend
+## Part 2: Buying the Bricks With a Repl Frontend
 
 In this next section, we want to make a site that’ll act as the site we can buy stuff from, and connect it to our Stripe integration we created in Part 1.
 
-To do this, we’ll start off with a new Repl, using the “basic HTML,CSS, JS” option, and call it BrickSite. 
+To do this, we’ll start off with a new repl, using the “basic HTML,CSS, JS” language option. Call it something like "BrickSite". 
 
-We’ll create a one page application with minimal functionality -  a static list of bricks that a user can buy. Each brick has a price, a name, a description and an image. A "buy" button will allow the user to purchase a brick.
+We’ll create a one page application with minimal functionality – a static list of bricks that a user can buy. Each brick has a price, a name, a description and an image. A "buy" button will allow the user to purchase a brick.
 
 You can find the complete code here: https://repl.it/@ThisisCarla/MySite#index.html .
 
-
-### 1. Making BrickSite:
+### 1. Making BrickSite
 Our first step is to add the Bulma styling library. It’s a great way to style BrickSite with little effort. We’ll include the CDN by replacing the default `rel=”stylesheet”` with the Bulma CDN.
 
-*Nifty-tip!* Searching “bulma” in the packages tab in our Repl.it IDE means we can insert it automatically. See here:
+*Nifty-tip!* Searching “bulma” in the packages tab in our Replit IDE means we can insert it automatically. See here:
 ![Auto adding Bulma](images/6.png)
 
 This inserts the following into our head tag of `index.html`:
@@ -192,7 +194,7 @@ This inserts the following into our head tag of `index.html`:
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
 ```
 
-First, we want to create a list of bricks a user can buy. Each brick has it's own name, description, predefined styles, price and image. We paste this in our `script.js`:
+First, we want to create a list of bricks a user can buy. Each brick has its own name, description, predefined styles, price and image. We paste this in our `script.js`:
 
 ```
 const BRICKS = [
@@ -261,10 +263,9 @@ The full code for `index.js` is:
 </html>
 ```
 
-Now going back to our `script.js`, we want to add some good ol’ dynamic vanilla JS elements to the content on the page. For every brick in the BRICKS array, we've created a div element, added it's own name, styling, content and button, and then added it to the DOM.
+Now, going back to our `script.js`, we want to add some good ol’ dynamic vanilla JS elements to the content on the page. For every brick in the BRICKS array, we've created a div element, added it's own name, styling, content and button, and then added it to the DOM.
 
 We add the following content in order:
-
 
 For each brick in our predefined list:
 
@@ -280,7 +281,7 @@ Add a new `div` to the DOM and give it some styling (predefined by bulma so we d
  newBrick.className = "tile is-parent";
 ```
 
-Add an `article` element on the document and give it some styling. Each brick as it's own style defined in the `BRICKS` array, so use this in the class definitions:
+Add an `article` element on the document and give it some styling. Each brick has its own style defined in the `BRICKS` array, so use this in the class definitions:
 
 ```
  let newBrickArticle = document.createElement('article');
@@ -295,7 +296,7 @@ Create a new `p` element on the document, give it title styling and make the tex
  newBrickTitle.innerHTML = BRICKS[i].name;
 ```
 
-Do the same with the brick`s description:
+Do the same with the brick's description:
 
 ```
  let newBrickDesc = document.createElement('p');
@@ -311,7 +312,7 @@ And show the brick's price by adding a new `div` with the price in a little desc
  newBrickCost.innerHTML = "This brick costs: $" + BRICKS[i].cost;
 ```
 
-Lastly, add the `a` element for purchasing the brick with some styling and text. Also give it an id that's the number of the brick, so we know what content to pass to the method when the button is clicked on. We'll create the `onclick` method and functionality for this a little later:
+Lastly, add the `a` element for purchasing the brick with some styling and text. Also give it an id that's the number of the brick, so we know what content to pass to the method when the button is clicked. We'll create the `onclick` method and functionality for this later on:
 
 ```
   let newBrickButton = document.createElement('a');
@@ -320,7 +321,7 @@ Lastly, add the `a` element for purchasing the brick with some styling and text.
   newBrickButton.innerHTML = "Buy this brick"
 ```
 
-Now add the new title, description, cost and button elements to the `article` element:
+Now, add the new title, description, cost and button elements to the `article` element:
 
 ```
  newBrickArticle.appendChild(newBrickTitle);
@@ -329,7 +330,7 @@ Now add the new title, description, cost and button elements to the `article` el
  newBrickArticle.appendChild(newBrickButton);
 ```
 
-And finally add the `article` to the parent brick `div` and append it as a child to the `div` we defined as `id="bricks"` in our `index.html`; and close the for loop:
+And, finally, add the `article` to the parent brick `div` and append it as a child to the `div` we defined as `id="bricks"` in our `index.html`; and close the for loop:
 
 ```
  newBrick.appendChild(newBrickArticle);
@@ -337,7 +338,7 @@ And finally add the `article` to the parent brick `div` and append it as a child
 }
  ```
 
-Altogether, our script.js now looks like:
+Altogether, our script.js now looks like this:
 ```
 const BRICKS = [
   {
@@ -397,7 +398,7 @@ for (var i = 0; i < BRICKS.length; i++) {
 }
 ```
 
-Referring back to the server's endpoint code that we got from the Stripe walkthrough, you will notice it requires both a `success.html` and a `cancel.html`. Let’s make new files for these in the root of our Replit.
+Referring back to the server's endpoint code that we got from the Stripe walkthrough, you'll notice it requires both a `success.html` and a `cancel.html`. Let’s make new files for these in the root of our repl.
 
 Here’s the code for the success page - `success.html`:
 ![Success page](images/9.png)
@@ -463,13 +464,13 @@ We can test these by adding the file name as the button's href inside the script
  newBrickButton.href = "cancel.html"
  ```
  
-Alrighty, now that we have the groundwork on the frontend - this brings us to Part 3 - connecting the parts!
+Alright, now that we have the groundwork on the frontend. This brings us to Part 3 – connecting the parts!
  
 
 ## Part 3: Connecting the Parts
-Going back to our server Replit, we’ll notice the `YOUR_DOMAIN` constant. Set that as your Repl.it “frontend” url.
+Going back to our server Replit, we’ll notice the `YOUR_DOMAIN` constant. Set that as your Replit “frontend” url.
 
-Eg. my frontend url is: `https://MySitesCheckoutWithStripe.thisiscarla.repl.co` as you can see below:
+E.g., My frontend url is: `https://MySitesCheckoutWithStripe.thisiscarla.repl.co` as you can see below:
 ![URL](images/11.png)
 
 Replace `YOUR_DOMAIN` with the frontend url:
@@ -478,13 +479,13 @@ Replace `YOUR_DOMAIN` with the frontend url:
 const YOUR_DOMAIN = 'https://MySite.thisiscarla.repl.co';
 ```
 
-Now within the `create-checkout-session` post request, we need to do a couple of things, the first is to define the payment methods available:
+Now, within the `create-checkout-session` post request, we need to do a couple of things. The first is to define the payment methods available:
 ```
    payment_method_types: ['card'],
 
 ```
 
-Next is to define the `line items`, we want to add our own content here that would get passed from the frontend Repl.it, so we define the product inventory information based on what is sent through to the frontend:
+Next is to define the `line items`. We want to add our own content here that would get passed from the frontend Replit, so we define the product inventory information based on what is sent through to the frontend:
 
 ```
   line_items: [
@@ -499,20 +500,20 @@ Next is to define the `line items`, we want to add our own content here that wou
   ],
 ```
 
-Next, we need to define the mode - there are three options supported by Stripe: `payment`, `subscription` or `setup`. One time purchases use the `payment` mode.    
+Next, we need to define the mode. There are three options supported by Stripe: `payment`, `subscription` or `setup`. One-time purchases use the `payment` mode.    
 
 ```
 mode: 'payment'
 ```
 
-Lastly, we need to define the success and cancel pages - the same pages we created earlier on the frontend.
+Lastly, we need to define the success and cancel pages; the same pages we created earlier on the frontend.
 
 ```
   success_url: `${YOUR_DOMAIN}/success.html`,
   cancel_url: `${YOUR_DOMAIN}/cancel.html`,
 ```
 
-All together, the index.js of the serverside Repl now looks as follows (I've also added a `console.log` line inside our request so that we can confirm the incoming request body):
+Altogether, the index.js of the server-side repl now looks as follows (with a `console.log` line added inside our request so that we can confirm the incoming request body):
 ```
 
 const Database = require("@replit/database");
@@ -556,24 +557,23 @@ app.listen(4242, () => console.log('Running on port 4242'));
 
 ### Back to BrickSite
 
-First, we need to add Stripe as a CDN dependency to our site, to do this, paste the following:
+First, we need to add Stripe as a CDN dependency to our site. To do this, paste the following between the `<head> ... </head>` tags of your `index.js`:
 ```
    <script src="https://js.stripe.com/v3/"></script>
 ```
-Between the `<head> ... </head>` tags of your `index.js`.
 
-Now going back to `script.js` we want to define a new instance of Stripe with your publishable API key (you will find this in the Load Stripe.js section of the [Integration Builder walkthrough](https://stripe.com/docs/checkout/integration-builder)):
+Now, going back to `script.js`, we want to define a new instance of Stripe with your publishable API key (you will find this in the Load Stripe.js section of the [Integration Builder walkthrough](https://stripe.com/docs/checkout/integration-builder)):
 ```
  var stripe = Stripe(YOUR_API_KEY);
 ```
 
-Now we want to create `onclick` event listeners to our button definitions so that we can initiate the purchase when the button is clicked.
+Next we want to create `onclick` event listeners to our button definitions so that we can initiate the purchase when the button is clicked.
 
 Underneath the button definitions in `script.js`, add the following:
 ```
   newBrickButton.onclick = buttonClick;
 ```
-Now at the bottom of the page we want to define the function `buttonClick` as the function that will execute when the button is clicked.
+Now, at the bottom of the page, we want to define the function `buttonClick` as the function that will execute when the button is clicked.
 
 ```
 async function buttonClick(event) {
@@ -581,7 +581,7 @@ async function buttonClick(event) {
 }
 ```
 
-Inside `buttonClick` we paste in the prebuilt checkout page’s html script content from the "Fetch a Checkout Session" section of the [Integration builder walkthrough](https://stripe.com/docs/checkout/integration-builder):
+Inside `buttonClick`, we paste the prebuilt checkout page’s html script content from the "Fetch a Checkout Session" section of the [Integration builder walkthrough](https://stripe.com/docs/checkout/integration-builder):
 
 ```
 async function buttonClick(event) {
@@ -608,9 +608,9 @@ async function buttonClick(event) {
 }
 ```
 
-This way each button will trigger a call to our server endpoint `/create-checkout-session` when clicked.
+This way, each button will trigger a call to our server endpoint `/create-checkout-session` when clicked.
 
-We need to add a couple more things to allow fetch to function:
+We need to add a couple more things to allow fetch to function.
 
 At the very top of the `buttonClick` method, add the following to enable registering the window event of 'clicking':
 ```
@@ -618,14 +618,14 @@ event = event || window.event;
 var target = event.target || event.srcElement;
 ```
 
-Next we want to reference the brick that we clicked on. Each brick has an id that we can refence it by, that corresponds with it's index in the `BRICKS` array. We get and parse the id as follows:
+Next, we want to reference the brick that we clicked on. Each brick has an id that we can refence it by, that corresponds with its index in the `BRICKS` array. We get and parse the id as follows:
 
 ```
 var id = target.id;
 let i = parseInt(id);
 ```
 
-At the moment the code is dispatching a POST request to `/create-checkout-session`, which isn't exactly right - we want it to be to `SERVER_URL/create-checkout-session`. Let's create a constant that's the URL and change the request destination as follows:
+At the moment, the code is dispatching a POST request to `/create-checkout-session`, which isn't exactly right. We want it to be to `SERVER_URL/create-checkout-session`. Let's create a constant that's the URL and change the request destination as follows:
 
 ```
 const API_URL = "https://MySitesCheckoutWithStripe.thisiscarla.repl.co";
@@ -643,7 +643,7 @@ headers: {
 },
 ```
 
-Underneath this we now want to send our body content. This will allow us to send the brick details to Stripe on the server-side, so that it can display it on the checkout page:
+Underneath this, we now want to send our body content. This will allow us to send the brick details to Stripe on the server-side, so that it can display it on the checkout page:
 
 ```
 body: JSON.stringify({
@@ -656,7 +656,7 @@ body: JSON.stringify({
 
 (We need to multiply the price by 100 because Stripe uses cents definition for pricing so `price: 100` equals $1).
 
-Altogether the content of `script.js` now looks like:
+Altogether, the content of `script.js` now looks like:
 
 ```
 const BRICKS = [
@@ -763,28 +763,28 @@ async function buttonClick(event) {
 ```
 
 
-## Finally - We are ready to test!
+## Let's Get Testing
 
-To test make sure the server-side is running. You can confirm this by making sure you see the "Stop" button at the top:
+To test, make sure the server-side is running. You can confirm this by making sure you see the "Stop" button at the top:
 ![New tab icon](images/18.png)
 
-Now go back to the frontend, and press Run there too. Unlike the server-side it won't continue to say "Stop", but it is running. Now we are ready to attempt to buy a brick by clicking on a brick's "buy" button.
+Now go back to the frontend, and press "Run" there too. Unlike the server-side, it won't continue to say "Stop", but it is running. Now we are ready to attempt to buy a brick by clicking on a brick's "buy" button.
 
 ### Debugging
-Once running the request you may get the error:
+Once running the request, you may get the error:
 ```
 UnhandledPromiseRejectionWarning: Error: In order to use Checkout, you must set an account or business name at https://dashboard.stripe.com/account.
 ```
 
 To fix this, follow the link and add a company name on your Stripe dashboard.
 
-You may also get the error "Does not have permission to redirect" after clicking on "Buy this brick" using the Repl.it browser preview mode. In order to avoid this, open the frontend in a new tab by clicking on the new tab icon:
+You may also get the error "Does not have permission to redirect" after clicking on "Buy this brick" using the Replit browser preview mode. In order to avoid this, open the frontend in a new tab by clicking on the new tab icon:
 
 ![New tab icon](images/14.png)
 
 
 
-### Now, we are ready to buy one of our bricks!
+### We are ready to buy a brick
 
 ![In a new tab](images/15.png)
 
@@ -792,7 +792,7 @@ I've chosen to buy a Bricketty Brick. Clicking on "Buy this brick" redirects to 
 
 ![Checkout page](images/16.png)
 
-Now test the purchase process by entering the Stripe test payment card details:
+Now, test the purchase process by entering the Stripe test payment card details:
 
 ```
 Card number: 4242 4242 4242 4242 
